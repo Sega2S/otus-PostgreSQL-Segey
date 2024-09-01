@@ -115,7 +115,7 @@ SET
 postgres=*# insert into persons(first_name, second_name) values('sveta', 'svetova');
 INSERT 0 1
 ```
-```
+
 ## сделать select* from persons во второй сессии*
 ```sql
 postgres=# set transaction isolation level repeatable read;
@@ -131,8 +131,9 @@ postgres=*# select* from persons;
 ## видите ли вы новую запись и если да то почему?
 ```
 Нет, так как первая транзакция еще не завершена. 
-## завершить первую транзакцию - commit;
 ```
+## завершить первую транзакцию - commit;
+```sql
 postgres=*# commit;
 COMMIT
 ```
