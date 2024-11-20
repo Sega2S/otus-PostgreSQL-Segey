@@ -33,6 +33,7 @@ postgres=# create table test(c1 text);
 postgres=# insert into test values('1');
 \q
 ```
+```
 postgres=# create table test(c1 text);
 CREATE TABLE
 postgres=# insert into test values('1');
@@ -45,7 +46,7 @@ postgres=# \q
 yc-user@otus-vm:~$ sudo -i -u postgres pg_ctlcluster 15 main stop
 Warning: stopping the cluster using pg_ctlcluster will mark the systemd unit as failed. Consider using systemctl:
   sudo systemctl stop postgresql@15-main
-yc-user@otus-vm:~$ sudo -i -u postgres pg_lsclusters
+yc-user@otus-vm:$ sudo -i -u postgres pg_lsclusters
 Ver Cluster Port Status Owner    Data directory              Log file
 15  main    5432 down   postgres /var/lib/postgresql/15/main /var/log/postgresql/postgresql-15-main.log
 ```
