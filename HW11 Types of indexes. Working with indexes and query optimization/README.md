@@ -1,6 +1,8 @@
 postgres=# CREATE DATABASE Test_db;
 CREATE DATABASE
 
+Создадим тестовую базу:
+```
 postgres=# \c test_db
 You are now connected to database "test_db" as user "postgres".
 test_db=#  CREATE TABLE test as
@@ -26,18 +28,7 @@ test_db=# select * from test limit 10;
  10 | 106.081953618313911  | Sergey | f
 (10 rows)
 
-Статистика по таблице
-test_db=# analyze test;
-ANALYZE
-test_db=# select attname, correlation from pg_stats where tablename = 'test';
-    attname     | correlation
-----------------+-------------
- id             |           1
- txt            |  0.82117134
- array          |  0.20567356
- random_boolean |    0.502827
-(4 rows)
-
+```
 ## Создать индекс к какой-либо из таблиц вашей БД
 ```
 план выполнения запроса без индекса по полю id:
