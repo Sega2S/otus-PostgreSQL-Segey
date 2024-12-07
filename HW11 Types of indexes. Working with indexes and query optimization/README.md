@@ -1,8 +1,8 @@
-postgres=# CREATE DATABASE Test_db;
-CREATE DATABASE
 
 Создадим тестовую базу:
 ```
+postgres=# CREATE DATABASE Test_db;
+CREATE DATABASE
 postgres=# \c test_db
 You are now connected to database "test_db" as user "postgres".
 test_db=#  CREATE TABLE test as
