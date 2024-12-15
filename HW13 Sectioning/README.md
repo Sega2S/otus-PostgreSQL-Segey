@@ -186,8 +186,11 @@ demo=# \dt+;
  bookings | tickets         | table | postgres | permanent   | heap          | 109 MB  | Tickets
 (8 rows)
 ```
+![table1](https://github.com/Sega2S/otus-PostgreSQL-Segey/blob/master/HW13%20Sectioning/scheme.PNG?raw=true)
 
 Секционируем таблицу bookings (бронирования)
+![table1](https://github.com/Sega2S/otus-PostgreSQL-Segey/blob/master/HW13%20Sectioning/table1.PNG?raw=true)
+![table2](https://github.com/Sega2S/otus-PostgreSQL-Segey/blob/master/HW13%20Sectioning/table2.PNG?raw=true)
 ```
 demo=# select count(book_ref) from bookings;
  count
@@ -302,8 +305,10 @@ ALTER TABLE
 
 ```
 По итогу поиск в секционной таблице проходит быстрее, за счет того что записей в таблице меньше.
-Было Execution Time: 0.076 ms 
-Стало  Execution Time: 0.024 ms
+До секционирования:
+Execution Time: 0.076 ms 
+После секционирования:
+Execution Time: 0.024 ms
 ```
 explain analyze select * from bookings where book_ref='102A61';
                                                               QUERY PLAN

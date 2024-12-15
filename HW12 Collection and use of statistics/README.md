@@ -122,8 +122,19 @@ ORDER BY a1.airport_name;
 Результат запроса возвращает информацию о пассажирах (номер билета, класс,стоимость и данные пассажира), которые летят классом обслуживания Business
 SELECT tf.ticket_no, tf.fare_conditions, tf.amount, t.passenger_name, t.contact_data
 FROM ticket_flights tf
-FULL JOIN ticket t ON  tf.ticket_no = t.ticket_no
+FULL JOIN tickets t ON  tf.ticket_no = t.ticket_no
 WHERE tf.fare_conditions = 'Business';
+
+   ticket_no   | fare_conditions |  amount   |     passenger_name      |                                     contact_data
+---------------+-----------------+-----------+-------------------------+---------------------------------------------------------------------------------------
+ 0005432000990 | Business        |  18500.00 | ALINA VOLKOVA           | {"email": "volkova.alina_03101973@postgrespro.ru", "phone": "+70582584031"}
+ 0005432000991 | Business        |  18500.00 | MAKSIM ZHUKOV           | {"email": "m-zhukov061972@postgrespro.ru", "phone": "+70149562185"}
+ 0005432000998 | Business        |  18500.00 | ILYA POPOV              | {"email": "popov_ilya.1971@postgrespro.ru", "phone": "+70003638926"}
+ 0005432001003 | Business        |  18500.00 | VALENTINA NIKITINA      | {"email": "nikitinavalentina.1975@postgrespro.ru", "phone": "+70794132478"}
+ 0005432001016 | Business        |  18500.00 | ANZHELIKA ABRAMOVA      | {"phone": "+70518693810"}
+ 0005432001019 | Business        |  18500.00 | VITALIY ALEKSEEV        | {"email": "alekseev-v.101975@postgrespro.ru", "phone": "+70816024815"}
+ 0005432001025 | Business        |  18500.00 | MARIYA FEDOROVA         | {"email": "m.fedorova-011974@postgrespro.ru", "phone": "+70868265157"}
+ 0005432001029 | Business        |  18500.00 | VLADIMIR ANTONOV        | {"email": "vladimir.antonov.121972@postgrespro.ru", "phone": "+70254846003"}
 ```
 ## Реализовать запрос, в котором будут использованы разные типы соединений
 
