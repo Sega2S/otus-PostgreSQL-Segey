@@ -1,13 +1,13 @@
-Создать инстанс ВМ с 2 ядрами и 4 Гб ОЗУ и SSD 10GB
+## Создать инстанс ВМ с 2 ядрами и 4 Гб ОЗУ и SSD 10GB
 ```
  yc compute instance create --name otus-vm --hostname otus-vm --cores 2 --memory 4 --create-boot-disk size=10G,type=network-ssd,image-folder-id=standard-images,image-family=ubuntu-2004-lts --network-interface subnet-name=otus-subnet,nat-ip-version=ipv4 --ssh-key yc_key.pub
 
 ```
-Установить на него PostgreSQL 15 с дефолтными настройками
+## Установить на него PostgreSQL 15 с дефолтными настройками
 ```
 sudo apt update && sudo apt upgrade -y -q && sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list' && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add - && sudo apt-get update && sudo apt -y install postgresql-15
 ```
-Создать БД для тестов: выполнить pgbench -i postgres
+## Создать БД для тестов: выполнить pgbench -i postgres
 ```
 postgres=# create database pgtest
 postgres-# ;
@@ -27,7 +27,7 @@ creating primary keys...
 done in 1.22 s (drop tables 0.00 s, create tables 0.01 s, client-side generate 0.90 s, vacuum 0.05 s, primary keys 0.26 s).
 
 ```
-Запустить pgbench -c8 -P 6 -T 60 -U postgres postgres
+## Запустить pgbench -c8 -P 6 -T 60 -U postgres postgres
 ```
 
 postgres@otus-vm:~$ pgbench -c8 -P 6 -T 60 -U postgres postgres
@@ -57,7 +57,7 @@ latency stddev = 34.981 ms
 initial connection time = 21.012 ms
 tps = 262.807093 (without initial connection time)
 ```
-Применить параметры настройки PostgreSQL из прикрепленного к материалам занятия файла
+## Применить параметры настройки PostgreSQL из прикрепленного к материалам занятия файла
 ```
  nano /etc/postgresql/15/main/postgresql.conf
 
@@ -74,7 +74,7 @@ work_mem = 6553kB
 min_wal_size = 4GB
 max_wal_size = 16GB
 ```
-Протестировать заново
+## Протестировать заново
 ```
 postgres@otus-vm:~$ pgbench -c8 -P 6 -T 60 -U postgres postgres
 pgbench -c8 -P 6 -T 60 -U postgres postgres
@@ -104,12 +104,12 @@ latency stddev = 32.548 ms
 initial connection time = 24.041 ms
 tps = 321.565175 (without initial connection time)
 ```
-Что изменилось и почему?
+## Что изменилось и почему?
 При первом запуске за 1 минуту работы отработало 15801 транзакции со скорость 262 транзакции в секунду
 После применения настроек за 1 минуту работы отработало 19305 транзакции со скорость 321 транзакции в секунду
 Пропускная способность базы данных увеличилась почти на 34%. Думаю, что такой результат удалось достичь за счет увеличения параметров wal_buffers, shared_buffers, maintenance_work_mem.
 
-Создать таблицу с текстовым полем и заполнить случайными или сгенерированными данным в размере 1млн строк
+## Создать таблицу с текстовым полем и заполнить случайными или сгенерированными данным в размере 1млн строк
 ```
 postgres=# CREATE TABLE test_table(test text);
 CREATE TABLE
@@ -127,7 +127,7 @@ postgres=# \dt
 postgres=# INSERT INTO test_table(test) SELECT 'test' FROM generate_series(1,1000000);
 INSERT 0 1000000
 ```
-Посмотреть размер файла с таблицей
+## Посмотреть размер файла с таблицей
 ```
 postgres=# SELECT pg_size_pretty(pg_TABLE_size('test_table'));
  pg_size_pretty
@@ -135,7 +135,7 @@ postgres=# SELECT pg_size_pretty(pg_TABLE_size('test_table'));
  35 MB
 (1 row)
 ```
-5 раз обновить все строчки и добавить к каждой строчке любой символ
+## 5 раз обновить все строчки и добавить к каждой строчке любой символ
 ```
 postgres=# UPDATE test_table SET test = CONCAT(test,'a');
 UPDATE 1000000
@@ -148,7 +148,7 @@ UPDATE 1000000
 postgres=# UPDATE test_table SET test = CONCAT(test,'a');
 UPDATE 1000000
 ```
-Посмотреть количество мертвых строчек в таблице и когда последний раз приходил автовакуум
+## Посмотреть количество мертвых строчек в таблице и когда последний раз приходил автовакуум
 ```
 postgres=# SELECT relname, n_live_tup, n_dead_tup, trunc(100*n_dead_tup/(n_live_tup+1))::float "ratio%", last_autovacuum FROM pg_stat_user_TABLEs  WHERE relname = 'test_table';
   relname   | n_live_tup | n_dead_tup | ratio% |       last_autovacuum
@@ -156,7 +156,7 @@ postgres=# SELECT relname, n_live_tup, n_dead_tup, trunc(100*n_dead_tup/(n_live_
  test_table |    1000000 |    1999626 |    199 | 2024-12-17 18:16:29.41092+00
 (1 row)
 ```
-Подождать некоторое время, проверяя, пришел ли автовакуум
+## Подождать некоторое время, проверяя, пришел ли автовакуум
 автовакуум прошел и мертвых строк не осталось
 ```
 postgres=# SELECT relname, n_live_tup, n_dead_tup, trunc(100*n_dead_tup/(n_live_tup+1))::float "ratio%", last_autovacuum FROM pg_stat_user_TABLEs  WHERE relname = 'test_table';
@@ -165,7 +165,7 @@ postgres=# SELECT relname, n_live_tup, n_dead_tup, trunc(100*n_dead_tup/(n_live_
  test_table |    1000000 |          0 |      0 | 2024-12-17 18:17:16.163368+00
 (1 row)
 ```
-5 раз обновить все строчки и добавить к каждой строчке любой символ
+## 5 раз обновить все строчки и добавить к каждой строчке любой символ
 ```
 postgres=# UPDATE test_table SET test = CONCAT(test,'s');
 UPDATE 1000000
@@ -178,7 +178,7 @@ UPDATE 1000000
 postgres=# UPDATE test_table SET test = CONCAT(test,'s');
 UPDATE 1000000
 ```
-Посмотреть размер файла с таблицей
+## Посмотреть размер файла с таблицей
 ```
 SELECT pg_size_pretty(pg_TABLE_size('test_table'));
 
@@ -188,12 +188,12 @@ postgres=# SELECT pg_size_pretty(pg_TABLE_size('test_table'));
  211 MB
 (1 row)
 ```
-Отключить Автовакуум на конкретной таблице
+## Отключить Автовакуум на конкретной таблице
 ```
 ALTER TABLE test_table SET (autovacuum_enabled = off);
 ALTER TABLE
 ```
-10 раз обновить все строчки и добавить к каждой строчке любой символ
+## 10 раз обновить все строчки и добавить к каждой строчке любой символ
 ```
 postgres=# UPDATE test_table SET test = CONCAT(test,'s');
 UPDATE 1000000
@@ -216,7 +216,7 @@ UPDATE 1000000
 postgres=# UPDATE test_table SET test = CONCAT(test,'s');
 UPDATE 1000000
 ```
-Посмотреть размер файла с таблицей
+## Посмотреть размер файла с таблицей
 ```
 postgres=# SELECT pg_size_pretty(pg_TABLE_size('test_table'));
  pg_size_pretty
@@ -224,11 +224,11 @@ postgres=# SELECT pg_size_pretty(pg_TABLE_size('test_table'));
  540 MB
 (1 row)
 ```
-Объясните полученный результат
+## Объясните полученный результат
 ```
 Автовакуум отключен и при каждом обновлении создается столько же новых записей и они не зачищаются. Следовательно, таблица становится больше. 
 ```
-Не забудьте включить автовакуум)
+## Не забудьте включить автовакуум)
 ```
 postgres=# ALTER TABLE test_table SET (autovacuum_enabled = on);
 ALTER TABLE
